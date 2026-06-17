@@ -413,4 +413,3 @@ def main():
 if __name__ == "__main__":
     main()
 SELESAI
-echo "Done buat bot.py"
