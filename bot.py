@@ -14,7 +14,7 @@ PAKET = {
     "1": {"nama": "WA Badak Garansi 7 Hari", "deskripsi": "Max Spam 500 Nomor/Hari", "harga": 150000, "garansi": "7 Hari"},
     "2": {"nama": "WA Badak Verif Garansi 3 Bulan", "deskripsi": "Max Spam 1000 Nomor/Hari", "harga": 300000, "garansi": "3 Bulan"},
     "3": {"nama": "WA Badak Api Verif FBM Garansi 5 Bulan", "deskripsi": "Max Spam 1500 Nomor/Hari", "harga": 500000, "garansi": "5 Bulan"},
-    "4": {"nama": "Paket Siaran Bisnis", "deskripsi": "WhatsApp Siaran Bisnis Tidak Berbayar", "harga": 285000, "garansi": "Seumur Hidup"},
+    "4": {"nama": "Paket Siaran Bisnis", "deskripsi": "WhatsApp Siaran Bisnis Tidak Berbayar", "harga": 250000, "garansi": "Seumur Hidup"},
 }
 
 def init_db():
@@ -48,6 +48,14 @@ def selesaikan_order(order_id):
     c.execute("UPDATE orders SET status='selesai' WHERE id=?", (order_id,))
     conn.commit()
     conn.close()
+
+def cek_punya_order_selesai(user_id):
+    conn = sqlite3.connect("toko.db")
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM orders WHERE user_id=? AND status='selesai'", (user_id,))
+    result = c.fetchone()[0]
+    conn.close()
+    return result > 0
 
 def simpan_otp(user_id, username, full_name, nomor_wa):
     conn = sqlite3.connect("toko.db")
@@ -111,13 +119,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Rp 500.000\n\n"
         "Paket 4 - Paket Siaran Bisnis\n"
         "WhatsApp Siaran Bisnis Tidak Berbayar\n"
-        "Rp 285.000\n\n"
+        "Rp 250.000\n\n"
         "Cara Order:\n"
         "/beli1 - Beli Paket 1\n"
         "/beli2 - Beli Paket 2\n"
         "/beli3 - Beli Paket 3\n"
         "/beli4 - Beli Paket Siaran Bisnis\n"
-        "/minta_otp - Request kode OTP\n\n"
+        "/minta_otp - Request kode OTP (khusus pembeli)\n\n"
         "Testimoni: t.me/" + CHANNEL_TESTIMONI + "\n"
         "Admin: t.me/" + ADMIN_USERNAME
     )
@@ -125,7 +133,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Beli Paket 1 - Rp 150.000", callback_data="beli|1")],
         [InlineKeyboardButton("Beli Paket 2 - Rp 300.000", callback_data="beli|2")],
         [InlineKeyboardButton("Beli Paket 3 - Rp 500.000", callback_data="beli|3")],
-        [InlineKeyboardButton("Siaran Bisnis - Rp 285.000", callback_data="beli|4")],
+        [InlineKeyboardButton("Siaran Bisnis - Rp 250.000", callback_data="beli|4")],
         [InlineKeyboardButton("Testimoni", url="https://t.me/" + CHANNEL_TESTIMONI),
          InlineKeyboardButton("Admin", url="https://t.me/" + ADMIN_USERNAME)],
     ])
@@ -156,8 +164,16 @@ async def beli4(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(teks, reply_markup=keyboard)
 
 async def minta_otp(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    if not cek_punya_order_selesai(user.id):
+        await update.message.reply_text(
+            "Maaf, fitur Request OTP hanya tersedia untuk pembeli yang sudah memiliki order yang dikonfirmasi.\n\n"
+            "Silakan beli paket terlebih dahulu!\n"
+            "Hubungi admin jika ada pertanyaan: t.me/" + ADMIN_USERNAME
+        )
+        return
     context.user_data["waiting_otp_nomor"] = True
-    await update.message.reply_text("Request Kode OTP\n\nKirim nomor WhatsApp kamu.\nFormat: 628xxxxxxxxxx")
+    await update.message.reply_text("Request Kode OTP\n\nKirim nomor WhatsApp kamu yang ingin diambil OTP-nya.\nFormat: 628xxxxxxxxxx")
 
 async def statistik(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
@@ -235,7 +251,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("Beli Paket 1 - Rp 150.000", callback_data="beli|1")],
             [InlineKeyboardButton("Beli Paket 2 - Rp 300.000", callback_data="beli|2")],
             [InlineKeyboardButton("Beli Paket 3 - Rp 500.000", callback_data="beli|3")],
-            [InlineKeyboardButton("Siaran Bisnis - Rp 285.000", callback_data="beli|4")],
+            [InlineKeyboardButton("Siaran Bisnis - Rp 250.000", callback_data="beli|4")],
             [InlineKeyboardButton("Testimoni", url="https://t.me/" + CHANNEL_TESTIMONI),
              InlineKeyboardButton("Admin", url="https://t.me/" + ADMIN_USERNAME)],
         ])
