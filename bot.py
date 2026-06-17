@@ -1,4 +1,3 @@
-cat > bot.py << 'SELESAI'
 import sqlite3
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
@@ -127,81 +126,33 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(teks, reply_markup=keyboard)
 
 async def beli1(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
     p = PAKET["1"]
-    teks = (
-        "Kamu memilih:\n"
-        + p["nama"] + "\n"
-        + p["deskripsi"] + "\n"
-        + "Garansi: " + p["garansi"] + "\n"
-        + "Harga: Rp " + str(p["harga"]) + "\n\n"
-        + "Apakah kamu setuju membeli paket ini?"
-    )
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|1")],
-        [InlineKeyboardButton("Batal", callback_data="batal")]
-    ])
+    teks = ("Kamu memilih:\n" + p["nama"] + "\n" + p["deskripsi"] + "\nGaransi: " + p["garansi"] + "\nHarga: Rp " + str(p["harga"]) + "\n\nApakah kamu setuju membeli paket ini?")
+    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|1")], [InlineKeyboardButton("Batal", callback_data="batal")]])
     await update.message.reply_text(teks, reply_markup=keyboard)
 
 async def beli2(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
     p = PAKET["2"]
-    teks = (
-        "Kamu memilih:\n"
-        + p["nama"] + "\n"
-        + p["deskripsi"] + "\n"
-        + "Garansi: " + p["garansi"] + "\n"
-        + "Harga: Rp " + str(p["harga"]) + "\n\n"
-        + "Apakah kamu setuju membeli paket ini?"
-    )
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|2")],
-        [InlineKeyboardButton("Batal", callback_data="batal")]
-    ])
+    teks = ("Kamu memilih:\n" + p["nama"] + "\n" + p["deskripsi"] + "\nGaransi: " + p["garansi"] + "\nHarga: Rp " + str(p["harga"]) + "\n\nApakah kamu setuju membeli paket ini?")
+    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|2")], [InlineKeyboardButton("Batal", callback_data="batal")]])
     await update.message.reply_text(teks, reply_markup=keyboard)
 
 async def beli3(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
     p = PAKET["3"]
-    teks = (
-        "Kamu memilih:\n"
-        + p["nama"] + "\n"
-        + p["deskripsi"] + "\n"
-        + "Garansi: " + p["garansi"] + "\n"
-        + "Harga: Rp " + str(p["harga"]) + "\n\n"
-        + "Apakah kamu setuju membeli paket ini?"
-    )
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|3")],
-        [InlineKeyboardButton("Batal", callback_data="batal")]
-    ])
+    teks = ("Kamu memilih:\n" + p["nama"] + "\n" + p["deskripsi"] + "\nGaransi: " + p["garansi"] + "\nHarga: Rp " + str(p["harga"]) + "\n\nApakah kamu setuju membeli paket ini?")
+    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|3")], [InlineKeyboardButton("Batal", callback_data="batal")]])
     await update.message.reply_text(teks, reply_markup=keyboard)
 
 async def minta_otp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["waiting_otp_nomor"] = True
-    await update.message.reply_text(
-        "Request Kode OTP\n\n"
-        "Kirim nomor WhatsApp kamu yang ingin diambil OTP-nya.\n"
-        "Format: 628xxxxxxxxxx"
-    )
+    await update.message.reply_text("Request Kode OTP\n\nKirim nomor WhatsApp kamu.\nFormat: 628xxxxxxxxxx")
 
 async def statistik(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
         await update.message.reply_text("Fitur ini hanya untuk admin.")
         return
     total_user, total_order, order_selesai, order_pending, pemasukan, total_otp, otp_pending = get_statistik()
-    teks = (
-        "STATISTIK BOT\n\n"
-        "Total User: " + str(total_user) + "\n\n"
-        "ORDER:\n"
-        "Total: " + str(total_order) + "\n"
-        "Selesai: " + str(order_selesai) + "\n"
-        "Pending: " + str(order_pending) + "\n\n"
-        "Pemasukan: Rp " + str(pemasukan) + "\n\n"
-        "OTP REQUEST:\n"
-        "Total: " + str(total_otp) + "\n"
-        "Pending: " + str(otp_pending)
-    )
+    teks = ("STATISTIK BOT\n\nTotal User: " + str(total_user) + "\n\nORDER:\nTotal: " + str(total_order) + "\nSelesai: " + str(order_selesai) + "\nPending: " + str(order_pending) + "\n\nPemasukan: Rp " + str(pemasukan) + "\n\nOTP REQUEST:\nTotal: " + str(total_otp) + "\nPending: " + str(otp_pending))
     await update.message.reply_text(teks)
 
 async def riwayat_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -240,32 +191,10 @@ async def foto_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         nomor = context.user_data.get("nomor_paket_bukti")
         context.user_data["waiting_bukti"] = False
         p = PAKET[nomor]
-        caption = (
-            "BUKTI TRANSFER MASUK!\n\n"
-            "Order ID: #" + str(order_id) + "\n"
-            "Nama: " + user.first_name + "\n"
-            "Username: @" + str(user.username) + "\n"
-            "User ID: " + str(user.id) + "\n\n"
-            "Paket: " + p["nama"] + "\n"
-            "Harga: Rp " + str(p["harga"]) + "\n\n"
-            "Kirim nomor ke buyer:\n"
-            "/kirim " + str(user.id) + " [nomor WA disini]"
-        )
+        caption = ("BUKTI TRANSFER MASUK!\n\nOrder ID: #" + str(order_id) + "\nNama: " + user.first_name + "\nUsername: @" + str(user.username) + "\nUser ID: " + str(user.id) + "\n\nPaket: " + p["nama"] + "\nHarga: Rp " + str(p["harga"]) + "\n\nKirim nomor ke buyer:\n/kirim " + str(user.id) + " [nomor WA disini]")
         photo = update.message.photo[-1].file_id
-        await context.bot.send_photo(
-            chat_id=ADMIN_ID,
-            photo=photo,
-            caption=caption,
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("Konfirmasi Order #" + str(order_id), callback_data="selesai|" + str(order_id) + "|" + str(user.id))]
-            ])
-        )
-        await update.message.reply_text(
-            "Bukti transfer diterima!\n"
-            "Order ID: #" + str(order_id) + "\n\n"
-            "Admin akan segera memproses pesanan kamu.\n"
-            "Nomor WA Badak akan dikirim setelah dikonfirmasi."
-        )
+        await context.bot.send_photo(chat_id=ADMIN_ID, photo=photo, caption=caption, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Konfirmasi Order #" + str(order_id), callback_data="selesai|" + str(order_id) + "|" + str(user.id))]]))
+        await update.message.reply_text("Bukti transfer diterima!\nOrder ID: #" + str(order_id) + "\n\nAdmin akan segera memproses pesanan kamu.")
 
 async def pesan_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
@@ -273,28 +202,8 @@ async def pesan_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         nomor_wa = update.message.text.strip()
         context.user_data["waiting_otp_nomor"] = False
         otp_id = simpan_otp(user.id, user.username or "", user.first_name, nomor_wa)
-        await context.bot.send_message(
-            chat_id=ADMIN_ID,
-            text=(
-                "REQUEST OTP BARU!\n\n"
-                "Nama: " + user.first_name + "\n"
-                "Username: @" + str(user.username) + "\n"
-                "User ID: " + str(user.id) + "\n"
-                "Nomor WA: " + nomor_wa + "\n"
-                "OTP ID: #" + str(otp_id) + "\n\n"
-                "Kirim OTP ke user:\n"
-                "/kirim " + str(user.id) + " [kode OTP disini]"
-            ),
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("OTP Sudah Dikirim #" + str(otp_id), callback_data="otp_selesai|" + str(otp_id) + "|" + str(user.id))]
-            ])
-        )
-        await update.message.reply_text(
-            "Request OTP Terkirim!\n"
-            "Nomor: " + nomor_wa + "\n"
-            "OTP ID: #" + str(otp_id) + "\n\n"
-            "Admin akan mengirimkan kode OTP segera. Harap tunggu!"
-        )
+        await context.bot.send_message(chat_id=ADMIN_ID, text=("REQUEST OTP BARU!\n\nNama: " + user.first_name + "\nUsername: @" + str(user.username) + "\nUser ID: " + str(user.id) + "\nNomor WA: " + nomor_wa + "\nOTP ID: #" + str(otp_id) + "\n\nKirim OTP ke user:\n/kirim " + str(user.id) + " [kode OTP disini]"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("OTP Sudah Dikirim #" + str(otp_id), callback_data="otp_selesai|" + str(otp_id) + "|" + str(user.id))]]))
+        await update.message.reply_text("Request OTP Terkirim!\nNomor: " + nomor_wa + "\nOTP ID: #" + str(otp_id) + "\n\nAdmin akan mengirimkan kode OTP segera. Harap tunggu!")
     elif context.user_data.get("waiting_bukti"):
         await update.message.reply_text("Kirim FOTO bukti transfer kamu, bukan teks.")
 
@@ -322,40 +231,16 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data.startswith("beli|"):
         nomor = data.split("|")[1]
         p = PAKET[nomor]
-        teks = (
-            "Kamu memilih:\n"
-            + p["nama"] + "\n"
-            + p["deskripsi"] + "\n"
-            + "Garansi: " + p["garansi"] + "\n"
-            + "Harga: Rp " + str(p["harga"]) + "\n\n"
-            + "Apakah kamu setuju membeli paket ini?"
-        )
-        keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|" + nomor)],
-            [InlineKeyboardButton("Batal", callback_data="batal")]
-        ])
+        teks = ("Kamu memilih:\n" + p["nama"] + "\n" + p["deskripsi"] + "\nGaransi: " + p["garansi"] + "\nHarga: Rp " + str(p["harga"]) + "\n\nApakah kamu setuju membeli paket ini?")
+        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Ya, Saya Setuju", callback_data="setuju|" + nomor)], [InlineKeyboardButton("Batal", callback_data="batal")]])
         await query.edit_message_text(teks, reply_markup=keyboard)
 
     elif data.startswith("setuju|"):
         nomor = data.split("|")[1]
         p = PAKET[nomor]
         order_id = simpan_order(user.id, user.username or "", user.first_name, p["nama"], p["harga"])
-        teks = (
-            "Detail Pembayaran\n\n"
-            + p["nama"] + "\n"
-            + "Harga: Rp " + str(p["harga"]) + "\n\n"
-            + "Transfer ke:\n"
-            + "Bank: " + BANK + "\n"
-            + "No Rek: " + NOMOR_REKENING + "\n"
-            + "Atas Nama: " + NAMA_REKENING + "\n"
-            + "Nominal: Rp " + str(p["harga"]) + "\n\n"
-            + "Order ID: #" + str(order_id) + "\n\n"
-            + "Setelah transfer klik tombol di bawah lalu kirim foto bukti transfer!"
-        )
-        keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("Saya Sudah Transfer - Kirim Bukti", callback_data="minta_bukti|" + str(order_id) + "|" + nomor)],
-            [InlineKeyboardButton("Batal", callback_data="batal")]
-        ])
+        teks = ("Detail Pembayaran\n\n" + p["nama"] + "\nHarga: Rp " + str(p["harga"]) + "\n\nTransfer ke:\nBank: " + BANK + "\nNo Rek: " + NOMOR_REKENING + "\nAtas Nama: " + NAMA_REKENING + "\nNominal: Rp " + str(p["harga"]) + "\n\nOrder ID: #" + str(order_id) + "\n\nSetelah transfer klik tombol di bawah lalu kirim foto bukti transfer!")
+        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Saya Sudah Transfer - Kirim Bukti", callback_data="minta_bukti|" + str(order_id) + "|" + nomor)], [InlineKeyboardButton("Batal", callback_data="batal")]])
         await query.edit_message_text(teks, reply_markup=keyboard)
 
     elif data.startswith("minta_bukti|"):
@@ -365,10 +250,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["waiting_bukti"] = True
         context.user_data["order_id_bukti"] = order_id
         context.user_data["nomor_paket_bukti"] = nomor
-        await query.edit_message_text(
-            "Silakan kirim FOTO bukti transfer kamu sekarang.\n"
-            "Order ID: #" + str(order_id)
-        )
+        await query.edit_message_text("Silakan kirim FOTO bukti transfer kamu sekarang.\nOrder ID: #" + str(order_id))
 
     elif data.startswith("selesai|"):
         if user.id != ADMIN_ID:
@@ -377,10 +259,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parts = data.split("|")
         order_id, uid = int(parts[1]), int(parts[2])
         selesaikan_order(order_id)
-        await context.bot.send_message(
-            chat_id=uid,
-            text="Pembayaran Dikonfirmasi!\nOrder #" + str(order_id) + " selesai.\nNomor WA Badak akan segera dikirim admin.\nTerima kasih!"
-        )
+        await context.bot.send_message(chat_id=uid, text="Pembayaran Dikonfirmasi!\nOrder #" + str(order_id) + " selesai.\nNomor WA Badak akan segera dikirim admin.\nTerima kasih!")
         await query.edit_message_text("Order #" + str(order_id) + " selesai! Notifikasi terkirim ke user.")
 
     elif data.startswith("otp_selesai|"):
@@ -412,4 +291,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-SELESAI
