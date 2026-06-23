@@ -2,7 +2,7 @@ import sqlite3
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 
-TOKEN = "8956798122:AAFJBRkQS0Rl4mWk8pQzgszhau4VlpxzPIU"
+TOKEN = "8956798122:AAE3kWzsDFjaNXVaTari75vxVbwZSyjdCZ4"
 ADMIN_ID = 8123373116
 NOMOR_REKENING = "901727395930"
 NAMA_REKENING = "CIT***"
