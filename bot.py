@@ -3,8 +3,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 
 import os
-TOKEN = os.environ.get("TOKEN", "ISI_TOKEN_DISINI")
-ADMIN_ID = int(os.environ.get("ADMIN_ID", "0"))
+TOKEN = os.environ.get("8956798122:AAE3kWzsDFjaNXVaTari75vxVbwZSyjdCZ4")
+ADMIN_ID = int(os.environ.get("8123373116"))
 CHANNEL_TESTIMONI = "RanggaShoping"
 ADMIN_USERNAME = "Galtzyyo"
 QRIS_FILE = "qris.png"
